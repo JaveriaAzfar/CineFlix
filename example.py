@@ -349,75 +349,45 @@ class RegisterScreenAsViewer(QtWidgets.QMainWindow):
 
 class HomePageScreen(QtWidgets.QMainWindow):
     def __init__(self):
-        super(HomePageScreen, self).__init__()
+        super(UI, self).__init__()
         uic.loadUi('homePage.ui', self)
+    
+         # Find the search bar and button
+        self.lineEditsearch = self.findChild(QtWidgets.QLineEdit, "lineEditsearch")
+        self.searchButton = self.findChild(QtWidgets.QPushButton, "searchButton")
 
-        # Assuming you already have a layout with a search bar, we are adding the dynamic table here
+          # Connect the search button to search functionality
+        self.searchButton.clicked.connect(self.search_movies)
 
-        self.setWindowTitle('Movie Search')
-        self.setGeometry(200, 200, 800, 600)  # Adjust window size as needed
-
-        # Create a central widget and set it to the main window
-        self.central_widget = QtWidgets.QWidget(self)
-        self.setCentralWidget(self.central_widget)
-
-        # Create a layout to manage widgets (Search Bar, Table, etc.)
-        self.layout = QtWidgets.QVBoxLayout(self.central_widget)
-
-        # Create the search bar (QLineEdit)
-        self.lineEditsearch = QtWidgets.QLineEdit(self)
-        self.lineEditsearch.setPlaceholderText("Search movies by title...")
-        self.layout.addWidget(self.lineEditsearch)
-
-        # Connect the search functionality
-        self.lineEditsearch.textChanged.connect(self.search_movies)
-
-
-        # Initially no table, we will add it dynamically after search results are fetched
-        self.moviesTable = None  # Placeholder for the table
+        # Connect search bar to search functionality
+        self.lineEditsearch.returnPressed.connect(self.search_movies)
 
     def search_movies(self):
-        search_query = self.lineEditsearch.text()
-        print(f"Search query: '{search_query}'")  # Debugging line
-        if search_query.strip() == "":
-            return  # Avoid searching with an empty query
-        
+        search_query = self.lineEditsearch.text().strip()
+        if not search_query:
+            return  # Skip if the search query is empty
+
         connection = pyodbc.connect(connection_string)
         cursor = connection.cursor()
 
         try:
-            # SQL query with JOIN to get genre from the MovieGenres table
-            cursor.execute("""
-                SELECT m.MovieID, m.Title, g.GenreName, c.Director, m.Release_date
+            # Query to search movies based on title
+            query = """
+                SELECT m.MovieID, m.Title
                 FROM Movies m
-                INNER JOIN MovieGenres g ON m.GenreID = g.GenreID
-                INNER JOIN Crew c on m.MovieID = c.MovieID
                 WHERE m.Title LIKE ?
-            """, f"%{search_query}%")
+            """
+            cursor.execute(query, f"%{search_query}%")
             results = cursor.fetchall()
 
-            if not results:
-                print("No results found.")  # Debugging line
-
-            # If there is an existing table, remove it from the layout
-            if self.moviesTable:
-                self.layout.removeWidget(self.moviesTable)
-                self.moviesTable.deleteLater()
-
-            # Dynamically create the movies table (QTableWidget) to display search results
-            self.moviesTable = QtWidgets.QTableWidget(self)
-            self.moviesTable.setColumnCount(5)  # MovieID, Title, Genre, Director, Release Year
-            self.moviesTable.setHorizontalHeaderLabels(['Movie ID', 'Title', 'Genre', 'Director', 'Release Year'])
-            self.moviesTable.setColumnHidden(0, True)  # Hide MovieID column
-            self.moviesTable.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
-            self.layout.addWidget(self.moviesTable)
-
-            # Populate the table with search results
-            self.moviesTable.setRowCount(0)  # Clear any existing rows
-            for row_number, row_data in enumerate(results):
-                self.moviesTable.insertRow(row_number)
-                for column_number, data in enumerate(row_data):
-                    self.moviesTable.setItem(row_number, column_number, QtWidgets.QTableWidgetItem(str(data)))
+            if results:
+                # Display the first result
+                movie_id = results[0][0]
+                movie_title = results[0][1]  # Assuming the title is the second column in the results
+                print(f"Found movie: {movie_title}")
+                self.show_movie_details(movie_id)
+            else:
+                QtWidgets.QMessageBox.information(self, "No Results", "No movies found matching your search query.")
 
         except Exception as e:
             logging.error(f"Error searching movies: {e}")
@@ -425,241 +395,211 @@ class HomePageScreen(QtWidgets.QMainWindow):
             cursor.close()
             connection.close()
 
+    def show_movie_details(self, movie_id):
+        # Open the MovieDescriptionScreen with the selected movie ID
+        self.description_screen = MovieDescriptionScreen(movie_id)
+        self.description_screen.show()
 
 
-class MovieDescriptionScreen(QtWidgets.QDialog):
-    def __init__(self):
+class MovieDescriptionScreen(QtWidgets.QMainWindow):
+    def __init__(self, movie_id):
         super(MovieDescriptionScreen, self).__init__()
-        uic.loadUi('MovieDescription.ui', self)
+        uic.loadUi('MovieDescription.ui', self)  # Load the UI file for movie details
 
-    def populate_movie_details_table(self, movie_details):
-        """
-        Populates the existing table in the UI with movie details.
-        :param movie_details: Dictionary containing movie information.
-        """
-        self.movieDetailsTable.setRowCount(0)  # Clear any existing rows
+        self.movieDetailsTable = self.findChild(QtWidgets.QTableWidget, "MovieDescriptionTable")
+        self.fetch_and_display_movie_details(movie_id)
 
-        # Populate rows with movie details
-        for field, value in movie_details.items():
-            row_position = self.movieDetailsTable.rowCount()
-            self.movieDetailsTable.insertRow(row_position)  # Add a new row
-            self.movieDetailsTable.setItem(row_position, 0, QtWidgets.QTableWidgetItem(field))  # Field Name
-            self.movieDetailsTable.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(value)))  # Field Value
-
-            # Optionally resize columns for better visibility
-            self.movieDetailsTable.horizontalHeader().setStretchLastSection(True)
-            self.movieDetailsTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-
-    def show_movie_details(self, item):
-        selected_row = item.row()
-        movie_id = self.moviesTable.item(selected_row, 0).text()
-
-        # Fetch movie details from the database
+    def fetch_and_display_movie_details(self, movie_id):
+        """Fetch movie details from the database and populate the UI."""
         connection = pyodbc.connect(connection_string)
         cursor = connection.cursor()
+
         try:
-            cursor.execute("""
-                SELECT m.MovieID, m.Title, g.GenreName, c.CrewName AS Director, m.Release_Date, 
-                    m.Description, m.Runtime, m.Rating, m.Cast
+            # Query to fetch detailed information about the movie
+            query = """                
+                SELECT m.Title, gen.GenreName, c.CrewName AS Director, year(m.Release_Date), m.Language,
+                       m.Duration, m.IMDB_Rating
                 FROM Movies m
-                LEFT JOIN MovieGenres mg ON m.MovieID = mg.MovieID
-                LEFT JOIN Genre g ON mg.GenreID = g.GenreID
+                LEFT JOIN MovieGenre g ON m.MovieID = g.MovieID
+                LEFT JOIN Genre gen ON g.GenreID = gen.GenreID
                 LEFT JOIN Crew c ON m.MovieID = c.MovieID AND c.CrewPosition = 'Director'
                 WHERE m.MovieID = ?
-            """, movie_id)
+            """
+            cursor.execute(query, movie_id)
             movie_data = cursor.fetchone()
+
             if not movie_data:
+                logging.warning(f"Movie details not found for MovieID: {movie_id}")
                 QtWidgets.QMessageBox.warning(self, "Error", "Movie details not found.")
                 return
 
-            # Map the data into a dictionary for ease of use
             movie_details = {
-                'Title': movie_data[1],
-                'Genre': movie_data[2],
-                'Director': movie_data[3],
-                'Release Year': movie_data[4],
-                'Description': movie_data[5],
-                'Runtime': movie_data[6],
-                'Rating': movie_data[7],
-                'Cast': movie_data[8],
+                'Title': movie_data[0] or 'N/A',  # Ensure null values are handled
+                'Genre': movie_data[1] or 'N/A',
+                'Director': movie_data[2] or 'N/A',
+                'Release Year': movie_data[3] or 'N/A',
+                'Language': movie_data[4] or 'N/A',
+                'Runtime': movie_data[5] or 'N/A',
+                'Rating': movie_data[6] or 'N/A',
             }
 
-            # Open the Movie Description Screen and populate the table
-            description_screen = MovieDescriptionScreen()
-            description_screen.populate_movie_details_table(movie_details)
-            description_screen.exec_()  # Open as modal dialog
+
+            self.populate_movie_details_table(movie_details)
         except Exception as e:
-            logging.error(f"Error fetching movie details: {e}")
+            logging.error(f"Error fetching movie details for MovieID {movie_id}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movie details.")
         finally:
             cursor.close()
             connection.close()
 
+    def populate_movie_details_table(self, movie_details):
+        """Populate the details table with movie information in a horizontal layout."""
+        # Set the number of columns based on the movie_details dictionary
+        self.movieDetailsTable.setColumnCount(len(movie_details))
+
+        # Set column headers (keys from the movie_details dictionary)
+        self.movieDetailsTable.setHorizontalHeaderLabels(movie_details.keys())
+
+        # Insert only one row to display the movie data horizontally
+        row_position = self.movieDetailsTable.rowCount()
+        self.movieDetailsTable.insertRow(row_position)
+
+        # Populate the row with movie details (values from the movie_details dictionary)
+        for col, (field, value) in enumerate(movie_details.items()):
+            self.movieDetailsTable.setItem(row_position, col, QtWidgets.QTableWidgetItem(str(value)))
+
+        # Resize columns to fit the content
+        self.movieDetailsTable.resizeColumnsToContents()
+
+        # Resize columns for better visibility
+        self.movieDetailsTable.horizontalHeader().setStretchLastSection(True)
+        self.movieDetailsTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+
 
 
 class RegisterScreenAsPremiumViewer(QtWidgets.QMainWindow):
-    def __init__(self, role):
+    def __init__(self):
         super(RegisterScreenAsPremiumViewer, self).__init__()
-        uic.loadUi('RegisterScreenAsPremiumViewer.ui', self)
-    #     self.role = role
-    #     self.role_label.setText(f"Register as {self.role}")
+        uic.loadUi('RegisterAsPremiumViewer.ui', self)
 
-    #     # Connect register button
-    #     self.register_button.clicked.connect(self.register_user)
+        # Connect register button
+        self.registerButtonPViewer.clicked.connect(self.register_user)
 
-    # def register_user(self):
-    #     username = self.username_input.text()
-    #     password = self.password_input.text()
-    #     # Add more fields based on the role
+    def register_user(self):
+        name = self.lineEditname.text()
+        email = self.lineEditemail.text()
+        password = self.lineEditpassword.text()
+        dob = self.dateEdit.date().toString('yyyy-MM-dd')
+        gender = self.lineEditgender.text()
+        address = self.lineEditaddress.text()
+        city = self.lineEditcity.text()
+        country = self.lineEditcountry.text()
 
-    #     try:
-    #         connection = pyodbc.connect(connection_string)
-    #         cursor = connection.cursor()
-    #         cursor.execute("""
-    #             INSERT INTO Users (Username, Password, Role)
-    #             VALUES (?, ?, ?)
-    #         """, username, password, self.role)
-    #         connection.commit()
-    #         cursor.close()
-    #         connection.close()
-    #         QtWidgets.QMessageBox.information(self, "Success", "Registration successful!")
-    #         self.close()
-    #     except Exception as e:
-    #         logging.error(f"Error registering user: {e}")
-    #         QtWidgets.QMessageBox.critical(self, "Error", "Registration failed.")
+        # Role assignment
+        role = "Premium" 
+
+        if not (name and email and dob and password and gender and address and city and country):
+            QtWidgets.QMessageBox.warning(self, "Error", "All fields are required.")
+            return
+
+        try:
+            connection = pyodbc.connect(connection_string)
+            cursor = connection.cursor()
+            cursor.execute("""
+                INSERT INTO Customer ([CustomerRole], [CustomerName], [CustomerGender], [CustomerDateOfBirth], [CustomerAddress], [CustomerCity], [CustomerCountry])
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, role, name, gender, dob, address, city, country)
+
+            connection.commit()
+
+            # Retrieve the generated Cinema ID
+            cursor.execute("SELECT @@IDENTITY")  # Retrieve last inserted identity
+            customer_id = cursor.fetchone()[0]
+            logging.info(f"Cinema ID retrieved: {customer_id}")
+
+            if not customer_id:
+                raise Exception("Failed to retrieve Customer ID")
+            
+
+            # Insert into Account table
+            cursor.execute("""
+                INSERT INTO Account ([Email], [Password], [CustomerID])
+                VALUES (?, ?, ?)
+            """, email, password, customer_id)
+            connection.commit()
+
+            # Close the database connection
+            cursor.close()
+            connection.close()
+
+            QtWidgets.QMessageBox.information(self, "Success", "Registration successful!")
+            
+            # Navigate to the home page
+            self.go_to_home_page()
+
+        except Exception as e:
+            logging.error(f"Error registering user: {e}")
+            QtWidgets.QMessageBox.critical(self, "Error", "Registration failed.")
+
+    def go_to_home_page(self):
+        # Load the Home Page UI
+        self.home_page = HomePageScreen()
+        self.home_page.show()
+        # Close the registration screen
+        self.close()
 
 class LoginScreen(QtWidgets.QMainWindow):
     def __init__(self):
         super(LoginScreen, self).__init__()
         uic.loadUi('Login.ui', self)
 
-    #     # Connect login button
-    #     self.login_button.clicked.connect(self.login_user)
+        # Connect login button
+        self.loginButton.clicked.connect(self.login_user)
 
-    # def login_user(self):
-    #     username = self.username_input.text()
-    #     password = self.password_input.text()
+    def login_user(self):
+        email = self.lineEditemail.text()  # Change username to email
+        password = self.lineEditpassword.text()
 
-    #     try:
-    #         connection = pyodbc.connect(connection_string)
-    #         cursor = connection.cursor()
-    #         cursor.execute("""
-    #             SELECT * FROM Users WHERE Username = ? AND Password = ? AND Role = ?
-    #         """, username, password, role)
-    #         user = cursor.fetchone()
-    #         cursor.close()
-    #         connection.close()
-    #         if user:
-    #             QtWidgets.QMessageBox.information(self, "Success", "Login successful!")
-    #             self.open_role_dashboard(role)
-    #         else:
-    #             QtWidgets.QMessageBox.warning(self, "Error", "Invalid credentials.")
-    #     except Exception as e:
-    #         logging.error(f"Error logging in user: {e}")
-    #         QtWidgets.QMessageBox.critical(self, "Error", "Login failed.")
+        try:
+            connection = pyodbc.connect(connection_string)
+            cursor = connection.cursor()
+            # Update SQL query to match email instead of username
+            cursor.execute("""
+                SELECT * FROM Account WHERE Email = ? AND Password = ?
+            """, email, password)
+            user = cursor.fetchone()
+            cursor.close()
+            connection.close()
 
-    # def open_role_dashboard(self, role):
-    #     if role == 'Admin':
-    #         self.dashboard = AdminDashboard()
-    #     elif role == 'Cinema Manager':
-    #         self.dashboard = ManagerDashboard()
-    #     elif role == 'Premium Viewer':
-    #         self.dashboard = PremiumViewerDashboard()
-    #     elif role == 'Normal Viewer':
-    #         self.dashboard = ViewerDashboard()
-    #     self.dashboard.show()
-    #     self.close()
+            if user:
+                customer_id = user[2]  # Assuming CustomerID is the 3rd column (index 2)
+                employee_id = user[3]  # Assuming EmployeeID is the 4th column (index 3)
 
+                if customer_id is not None:
+                    # User is a customer, open customer dashboard
+                    QtWidgets.QMessageBox.information(self, "Success", "Customer Login Successful!")
+                    self.open_homepage()
 
+                elif employee_id is not None:
+                    # User is an employee, open employee dashboard (Admin, Manager, etc.)
+                    QtWidgets.QMessageBox.information(self, "Success", "Employee Login Successful!")
+                    self.open_homepage()
+                else:
+                    QtWidgets.QMessageBox.warning(self, "Error", "Invalid credentials.")
+            else:
+                QtWidgets.QMessageBox.warning(self, "Error", "Invalid credentials.")
+                
+        except Exception as e:
+            logging.error(f"Error logging in user: {e}")
+            QtWidgets.QMessageBox.critical(self, "Error", "Login failed.")
 
+    def open_homepage(self):
+        # Open the Homepage UI for both customers and employees
+        self.homepage = HomePageScreen()  # Assuming you have a class for the Homepage UI
+        self.homepage.show()
+        self.close()
 
 app = QtWidgets.QApplication(sys.argv) 
 window = UI()  
 window.show()
 app.exec() 
-# try:
-#     # # Establish a connection to the database
-#     connection = pyodbc.connect(connection_string)
-#     cursor = connection.cursor()
-
-    # # INSERT: 
-    # new_customer = (
-    #     'Premium',  # CustomerRole
-    #     'Anna Brown',  # CustomerName
-    #     'Female',  # CustomerGender
-    #     '1995-06-10',  # CustomerDateOfBirth
-    #     '99 Elm St',  # CustomerAddress
-    #     'Greenfield',  # CustomerCity
-    #     'USA'  # CustomerCountry
-    # )
-
-    # insert_customer_query = """
-    #     INSERT INTO Customer (CustomerRole, CustomerName, CustomerGender, CustomerDateOfBirth, 
-    #                         CustomerAddress, CustomerCity, CustomerCountry)
-    #     OUTPUT INSERTED.CustomerID  -- This returns the auto-generated CustomerID
-    #     VALUES (?, ?, ?, ?, ?, ?, ?)
-    # """
-
-    # cursor.execute(insert_customer_query, new_customer)
-    # new_customer_id = cursor.fetchone()[0]  # Get the CustomerID of the new customer
-    # connection.commit()  # Commit the transaction
-    # print(f"New customer added successfully with CustomerID {new_customer_id}.")
-
-    # # Step 2: Add an account for the new customer using the generated CustomerID
-    # new_account = ('annabrown@example.com', 'SecurePass2024!', new_customer_id, None)
-    # insert_account_query = """
-    #     INSERT INTO Account ([Email], [Password], [CustomerID], [EmployeeID])
-    #     VALUES (?, ?, ?, ?)
-    # """
-
-    # cursor.execute(insert_account_query, new_account)
-    # connection.commit()
-    # print("New account added successfully.")
-
-
-    # # UPDATE:
-    # # Now update the account details using the fetched CustomerID
-    # new_email = 'annabrown_updated@example.com'
-    # new_password = 'UpdatedPass2024!'
-
-    # update_account_query = """
-    #     UPDATE Account
-    #     SET Email = ?, Password = ?
-    #     WHERE CustomerID = (select CustomerID from Customer where CustomerName = 'Anna Brown')
-    # """
-    # cursor.execute(update_account_query, new_email, new_password)
-    # connection.commit()  # Commit the transaction
-    # print("Account Information Updated")
-    
-    # # DELETE
-    # email = 'annabrown_updated@example.com'
-    # delete_account_query = """
-    #     DELETE from Account 
-    #     WHERE Email = ?
-    # """
-
-    # cursor.execute(delete_account_query, email)
-    # connection.commit()
-    # print("Account deleted successfully")
-
-# except Exception as e:
-#     error_message = f"An error occurred: {e}"
-#     print(error_message)
-#     logging.error(error_message)
-
-# finally:
-#     # Ensure resources are released properly
-#     try:
-#         if 'cursor' in locals() and cursor:
-#             cursor.close()
-#         if 'connection' in locals() and connection:
-#             connection.close()
-#     except Exception as cleanup_error:
-#         cleanup_message = f"Error during cleanup: {cleanup_error}"
-#         print(cleanup_message)
-#         logging.error(cleanup_message)
-
-
-
-
-
-

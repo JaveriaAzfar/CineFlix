@@ -22,9 +22,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>190</x>
       <y>30</y>
-      <width>181</width>
+      <width>241</width>
       <height>31</height>
      </rect>
     </property>
@@ -43,7 +43,7 @@
      <string>Login To Your Account</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -80,7 +80,7 @@ QPushButton:pressed {
      <string>Login</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="lineEditemail">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -91,8 +91,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #777777; /* Optional: border color */
+    background-color: rgb(0, 0, 0);
+    border: 3px solid #777777; /* Optional: border color */
     padding: 5px; /* Optional: padding for better spacing */
 }
 </string>
@@ -103,7 +103,7 @@ QPushButton:pressed {
      <rect>
       <x>220</x>
       <y>130</y>
-      <width>61</width>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
@@ -122,7 +122,7 @@ QPushButton:pressed {
      <string>Password:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="lineEditpassword">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -133,8 +133,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #777777; /* Optional: border color */
+    background-color: rgb(0, 0, 0);
+    border: 3px solid #777777; /* Optional: border color */
     padding: 5px; /* Optional: padding for better spacing */
 }
 </string>
@@ -148,7 +148,7 @@ QPushButton:pressed {
      <rect>
       <x>220</x>
       <y>70</y>
-      <width>61</width>
+      <width>71</width>
       <height>16</height>
      </rect>
     </property>
@@ -164,7 +164,7 @@ QPushButton:pressed {
 }</string>
     </property>
     <property name="text">
-     <string>Username:</string>
+     <string>Email:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -211,7 +211,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>630</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
