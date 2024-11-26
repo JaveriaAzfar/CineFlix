@@ -4,6 +4,8 @@ from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import QDate
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QHeaderView
 import sys
+from datetime import datetime
+
 
 
 # Configure logging to write errors to a file
@@ -451,6 +453,71 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
         finally:
             cursor.close()
             connection.close()
+
+# if play button pressed, call this function
+    def play_movie(self, movie_id, customer_id):
+        """Update DateEnded when the movie finishes playing."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Today's date for 'DateEnded'
+            today_date = datetime.now().strftime('%Y-%m-%d')
+
+            update_query = """
+                UPDATE WatchedHistory
+                SET DateEnded = ?
+                WHERE CustomerID = ? AND MovieID = ?
+            """
+            cursor.execute(update_query, today_date, customer_id, movie_id)
+            connection.commit()
+            logging.info(f"Updated DateEnded for MovieID {movie_id} and CustomerID {customer_id}.")
+        except Exception as e:
+            logging.error(f"Error updating DateEnded: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+
+# if watched button pressed, call this function
+    def mark_movie_as_watched(self, movie_id, customer_id):
+        """Mark a movie as watched by updating DateEnded in WatchedHistory."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Today's date for 'DateEnded'
+            today_date = datetime.now().strftime('%Y-%m-%d')
+
+            # Check if the movie exists in WatchedHistory
+            check_query = """
+                SELECT * FROM WatchedHistory
+                WHERE CustomerID = ? AND MovieID = ?
+            """
+            cursor.execute(check_query, customer_id, movie_id)
+            result = cursor.fetchone()
+
+            if result:
+                # Update DateEnded for the watched movie
+                update_query = """
+                    UPDATE WatchedHistory
+                    SET DateEnded = ?
+                    WHERE CustomerID = ? AND MovieID = ?
+                """
+                cursor.execute(update_query, today_date, customer_id, movie_id)
+                connection.commit()
+                logging.info(f"Updated DateEnded for MovieID {movie_id} and CustomerID {customer_id}.")
+                QtWidgets.QMessageBox.information(self, "Success", "Movie marked as watched!")
+            else:
+                logging.warning(f"MovieID {movie_id} not found in WatchedHistory for CustomerID {customer_id}.")
+                QtWidgets.QMessageBox.warning(self, "Error", "Movie is not in your watch history.")
+        except Exception as e:
+            logging.error(f"Error marking movie as watched: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "Failed to mark movie as watched.")
+        finally:
+            cursor.close()
+            connection.close()
+
+
 
     def populate_movie_details_table(self, movie_details):
         """Populate the details table with movie information in a horizontal layout."""
