@@ -5,7 +5,7 @@ from PyQt6.QtCore import QDate
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QHeaderView
 import sys
 from datetime import datetime
-
+from PyQt6.QtWidgets import QInputDialog, QMessageBox
 
 
 # Configure logging to write errors to a file
@@ -276,6 +276,120 @@ class CinemaInfoScreen(QtWidgets.QMainWindow):
         except Exception as e:
             logging.error(f"Error registering cinema: {e}")
             QtWidgets.QMessageBox.critical(self, "Error", "Cinema registration failed.")
+
+class CinemaManagerView(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(CinemaManagerView, self).__init__()
+        uic.loadUi('CinemaManagerView.ui', self)
+
+        # Connect register button
+        self.addMovie.clicked.connect(self.AddMovies)
+    
+    # CREATE A CHECK TO SEE WHETHER THAT CINEMA MANAGER IS OF THAT PARTICULAR CINEMA   (Supposes there is a bridge table for manager and cinema)
+    def check_cinema_manager_access(self, cinema_id, manager_id):
+        """Verify if the current cinema manager is associated with the given Cinema ID."""
+        try:
+            # Step 1: Get the manager's ID (assuming it's stored or passed during login)
+            # manager_id = self.get_logged_in_manager_id()  # Replace with your actual method to get the manager ID
+            
+            # Step 2: Query to check if the manager has access to the cinema
+            connection = pyodbc.connect(connection_string)
+            cursor = connection.cursor()
+            query = """
+                SELECT COUNT(*)
+                FROM CinemaManagerAccess
+                WHERE CinemaID = ? AND ManagerID = ?
+            """
+            cursor.execute(query, cinema_id, manager_id)
+            result = cursor.fetchone()
+
+            # Step 3: Return True if the manager has access, else False
+            return result[0] > 0
+
+        except Exception as e:
+            logging.error(f"Error checking access for ManagerID and CinemaID {cinema_id}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "Failed to verify manager access.")
+            return False
+        finally:
+            cursor.close()
+            connection.close()
+
+
+    def AddMovies(self):
+        """Add a movie to the CinemaListings table by asking for required inputs."""
+        try:
+            # Ask for CinemaID
+            cinema_id, ok = QInputDialog.getInt(self, "Cinema ID", "Enter Cinema ID:")
+            if not ok:
+                return
+
+            # Ask for MovieID
+            movie_id, ok = QInputDialog.getInt(self, "Movie ID", "Enter Movie ID:")
+            if not ok:
+                return
+
+            # Ask for Hall Number
+            hall_no, ok = QInputDialog.getInt(self, "Hall Number", "Enter Hall Number:")
+            if not ok:
+                return
+
+            # Ask for Date (in format YYYY-MM-DD)
+            date, ok = QInputDialog.getText(self, "Date", "Enter the date (YYYY-MM-DD):")
+            if not ok:
+                return
+            try:
+                datetime.strptime(date, '%Y-%m-%d')  # Validate date format
+            except ValueError:
+                QMessageBox.warning(self, "Invalid Date", "The date format is incorrect. Please enter in YYYY-MM-DD format.")
+                return
+
+            # Ask for Start Time (in format HH:MM)
+            start_time, ok = QInputDialog.getText(self, "Start Time", "Enter Start Time (HH:MM):")
+            if not ok:
+                return
+            try:
+                datetime.strptime(start_time, '%H:%M')  # Validate time format
+            except ValueError:
+                QMessageBox.warning(self, "Invalid Time", "The time format is incorrect. Please enter in HH:MM format.")
+                return
+
+            # Ask for End Time (in format HH:MM)
+            end_time, ok = QInputDialog.getText(self, "End Time", "Enter End Time (HH:MM):")
+            if not ok:
+                return
+            try:
+                datetime.strptime(end_time, '%H:%M')  # Validate time format
+            except ValueError:
+                QMessageBox.warning(self, "Invalid Time", "The end time format is incorrect. Please enter in HH:MM format.")
+                return
+
+            # Ask for Format (e.g., 3D, 2D, IMAX, etc.)
+            format, ok = QInputDialog.getText(self, "Format", "Enter Movie Format (e.g., 3D, 2D, IMAX):")
+            if not ok:
+                return
+
+            # Establish database connection
+            connection = pyodbc.connect(connection_string)
+            cursor = connection.cursor()
+
+            # Insert the new movie listing into the CinemaListings table
+            insert_query = """
+                INSERT INTO CinemaListings (CinemaID, MovieID, Hall_No, Date, Start_Time, EndTime, Format)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """
+            cursor.execute(insert_query, cinema_id, movie_id, hall_no, date, start_time, end_time, format)
+            connection.commit()
+
+            # Inform the user
+            QMessageBox.information(self, "Success", "Movie added to the cinema listings successfully!")
+
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Failed to add the movie: {e}")
+            logging.error(f"Error adding movie to CinemaListings: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+
 
 
 class RegisterScreenAsViewer(QtWidgets.QMainWindow):
@@ -735,6 +849,7 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
                                             f"No movies found released in the year {target_year}.")
                 return
 
+
             # Prepare the list of movie details for display
             movie_list = []
             for movie in movies:
@@ -903,7 +1018,6 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
         # Resize columns for better visibility
         self.movieDetailsTable.horizontalHeader().setStretchLastSection(True)
         self.movieDetailsTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
-
 
 
 class RegisterScreenAsPremiumViewer(QtWidgets.QMainWindow):
