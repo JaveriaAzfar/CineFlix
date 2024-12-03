@@ -454,7 +454,137 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
             cursor.close()
             connection.close()
 
-# if play button pressed, call this function
+    def fetch_and_display_movies_by_genre(self, genre_name):
+        """Fetch movies by genre from the database and populate the UI."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Query to fetch movies of the given genre
+            query = """
+                SELECT m.Title, year(m.Release_Date), m.Language, m.Duration, m.IMDB_Rating
+                FROM Movies m
+                LEFT JOIN MovieGenre g ON m.MovieID = g.MovieID
+                LEFT JOIN Genre gen ON g.GenreID = gen.GenreID
+                WHERE gen.GenreName = ?
+            """
+            cursor.execute(query, genre_name)
+            movies = cursor.fetchall()
+
+            if not movies:
+                logging.warning(f"No movies found for Genre: {genre_name}")
+                QtWidgets.QMessageBox.warning(self, "No Movies Found", f"No movies found for the genre '{genre_name}'.")
+                return
+
+            # Prepare the list of movie details for display
+            movie_list = []
+            for movie in movies:
+                movie_details = {
+                    'Title': movie[0] or 'N/A',
+                    'Release Year': movie[1] or 'N/A',
+                    'Language': movie[2] or 'N/A',
+                    'Runtime': movie[3] or 'N/A',
+                    'Rating': movie[4] or 'N/A',
+                }
+                movie_list.append(movie_details)
+
+            # Populate the UI table or list with the movies
+            self.populate_movies_table(movie_list)
+        except Exception as e:
+            logging.error(f"Error fetching movies for Genre {genre_name}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
+        finally:
+            cursor.close()
+            connection.close()
+
+    def fetch_and_display_movies_by_language(self, language_name):
+        """Fetch movies by language from the database and populate the UI."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Query to fetch movies of the given language
+            query = """
+                SELECT m.Title, year(m.Release_Date), m.Language, m.Duration, m.IMDB_Rating
+                FROM Movies m
+                WHERE m.Language = ?
+            """
+            cursor.execute(query, language_name)
+            movies = cursor.fetchall()
+
+            if not movies:
+                logging.warning(f"No movies found for Language: {language_name}")
+                QtWidgets.QMessageBox.warning(self, "No Movies Found", f"No movies found for the language '{language_name}'.")
+                return
+
+            # Prepare the list of movie details for display
+            movie_list = []
+            for movie in movies:
+                movie_details = {
+                    'Title': movie[0] or 'N/A',
+                    'Release Year': movie[1] or 'N/A',
+                    'Language': movie[2] or 'N/A',
+                    'Runtime': movie[3] or 'N/A',
+                    'Rating': movie[4] or 'N/A',
+                }
+                movie_list.append(movie_details)
+
+
+            # Populate the UI table or list with the movies
+            self.populate_movies_table(movie_list)
+        except Exception as e:
+            logging.error(f"Error fetching movies for Language {language_name}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
+        finally:
+            cursor.close()
+            connection.close()
+
+    def fetch_and_display_movies_by_crew(self, crew_name, crew_position):
+        """Fetch movies by a specific director or actor from the database and populate the UI."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Query to fetch movies by director or actor
+            query = """
+                SELECT DISTINCT m.Title, year(m.Release_Date), m.Language, m.Duration, m.IMDB_Rating
+                FROM Movies m
+                INNER JOIN Crew c ON m.MovieID = c.MovieID
+                WHERE c.CrewName = ? AND c.CrewPosition = ?
+            """
+            cursor.execute(query, crew_name, crew_position)
+            movies = cursor.fetchall()
+
+            if not movies:
+                logging.warning(f"No movies found for {crew_position}: {crew_name}")
+                QtWidgets.QMessageBox.warning(self, "No Movies Found", 
+                                            f"No movies found for {crew_position.lower()} '{crew_name}'.")
+                return
+
+            # Prepare the list of movie details for display
+            movie_list = []
+            for movie in movies:
+                movie_details = {
+                    'Title': movie[0] or 'N/A',
+                    'Release Year': movie[1] or 'N/A',
+                    'Language': movie[2] or 'N/A',
+                    'Runtime': movie[3] or 'N/A',
+                    'Rating': movie[4] or 'N/A',
+                }
+                movie_list.append(movie_details)
+
+            # Populate the UI table or list with the movies
+            self.populate_movies_table(movie_list)
+        except Exception as e:
+            logging.error(f"Error fetching movies for {crew_position} {crew_name}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
+        finally:
+            cursor.close()
+            connection.close()
+
+
+
+    # if play button pressed, call this function
     def play_movie(self, movie_id, customer_id):
         """Update DateStarted when the movie finishes playing."""
         connection = pyodbc.connect(connection_string)
