@@ -529,6 +529,7 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
                 }
                 movie_list.append(movie_details)
 
+
             # Populate the UI table or list with the movies
             self.populate_movies_table(movie_list)
         except Exception as e:
