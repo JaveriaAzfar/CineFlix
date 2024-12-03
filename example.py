@@ -532,7 +532,7 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
 
             # Populate the UI table or list with the movies
             self.populate_movies_table(movie_list)
-        except Exception as e:
+        except Exception as e: 
             logging.error(f"Error fetching movies for Language {language_name}: {e}")
             QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
         finally:
@@ -668,6 +668,39 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
         finally:
             cursor.close()
             connection.close()
+
+    def allow_movie_download(self, movie_id, customer_id):
+        """Allow a premium customer to download a movie for offline viewing."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Query to check the customer's role
+            check_role_query = """
+                SELECT CustomerRole FROM Customer
+                WHERE CustomerID = ?
+            """
+            cursor.execute(check_role_query, customer_id)
+            result = cursor.fetchone()
+
+            if result and result[0] == "Premium":
+                # Allow download for premium customers
+                logging.info(f"CustomerID {customer_id} is a premium user. Download allowed for MovieID {movie_id}.")
+                QtWidgets.QMessageBox.information(self, "Success", "Download initiated for the movie!")
+                # Here, you can add code to initiate the movie download process.
+            elif result and result[0] == "Regular":
+                logging.warning(f"CustomerID {customer_id} is not a premium user. Download denied.")
+                QtWidgets.QMessageBox.warning(self, "Error", "Only premium users can download movies for offline viewing.")
+            else:
+                logging.warning(f"CustomerID {customer_id} not found in the database.")
+                QtWidgets.QMessageBox.warning(self, "Error", "Customer not found.")
+        except Exception as e:
+            logging.error(f"Error checking premium status for CustomerID {customer_id}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "Failed to check premium status.")
+        finally:
+            cursor.close()
+            connection.close()
+
 
 
     def populate_movie_details_table(self, movie_details):
