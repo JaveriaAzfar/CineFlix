@@ -582,6 +582,53 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
             cursor.close()
             connection.close()
 
+    def fetch_and_display_movies_by_ratings(self, min_imdb_rating, min_rotten_rating):
+        """Fetch movies with ratings equal to or better than the given thresholds."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Query to fetch movies based on ratings
+            query = """
+                SELECT DISTINCT Title, year(Release_Date), Language, Duration, IMDB_Rating, RottenTomatoes
+                FROM Movies
+                WHERE IMDB_Rating >= ? AND RottenTomatoes >= ?
+            """
+            cursor.execute(query, min_imdb_rating, min_rotten_rating)
+            movies = cursor.fetchall()
+
+            if not movies:
+                logging.warning(f"No movies found with IMDB Rating >= {min_imdb_rating} "
+                                f"and Rotten Tomatoes >= {min_rotten_rating}.")
+                QtWidgets.QMessageBox.warning(self, "No Movies Found",
+                                            f"No movies found with IMDB Rating >= {min_imdb_rating} "
+                                            f"and Rotten Tomatoes >= {min_rotten_rating}.")
+                return
+
+            # Prepare the list of movie details for display
+            movie_list = []
+            for movie in movies:
+                movie_details = {
+                    'Title': movie[0] or 'N/A',
+                    'Release Year': movie[1] or 'N/A',
+                    'Language': movie[2] or 'N/A',
+                    'Runtime': movie[3] or 'N/A',
+                    'IMDB Rating': movie[4] or 'N/A',
+                    'Rotten Tomatoes': movie[5] or 'N/A',
+                }
+                movie_list.append(movie_details)
+
+            # Populate the UI table or list with the movies
+            self.populate_movies_table(movie_list)
+        except Exception as e:
+            logging.error(f"Error fetching movies with ratings >= {min_imdb_rating} (IMDB) "
+                        f"and >= {min_rotten_rating} (Rotten Tomatoes): {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
+        finally:
+            cursor.close()
+            connection.close()
+
+
 
 
     # if play button pressed, call this function
