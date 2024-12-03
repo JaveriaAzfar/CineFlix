@@ -628,6 +628,137 @@ class MovieDescriptionScreen(QtWidgets.QMainWindow):
             cursor.close()
             connection.close()
 
+    def fetch_and_display_movies_for_customer_city(self, customer_id):
+        """Fetch movies shown in cinemas located in the same city as the customer."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Step 1: Retrieve the city of the customer
+            customer_city_query = """
+                SELECT CustomerCity FROM Customer
+                WHERE CustomerID = ?
+            """
+            cursor.execute(customer_city_query, customer_id)
+            customer_city_result = cursor.fetchone()
+
+            if not customer_city_result:
+                logging.warning(f"CustomerID {customer_id} not found in the Customer table.")
+                QtWidgets.QMessageBox.warning(self, "Error", "Customer not found.")
+                return
+
+            customer_city = customer_city_result[0]
+            logging.info(f"Customer's city is {customer_city}.")
+
+            # Step 2: Retrieve cinemas located in the same city
+            cinemas_in_same_city_query = """
+                SELECT c.CinemaID, c.Address, c.City, ci.Country
+                FROM Cinema c
+                WHERE c.City = ?
+            """
+            cursor.execute(cinemas_in_same_city_query, customer_city)
+            cinemas = cursor.fetchall()
+
+            if not cinemas:
+                logging.warning(f"No cinemas found in the city: {customer_city}.")
+                QtWidgets.QMessageBox.warning(self, "No Cinemas Found", f"No cinemas found in {customer_city}.")
+                return
+
+            # Step 3: Retrieve all movies and their genres shown in those cinemas
+            movie_list = []
+            for cinema in cinemas:
+                cinema_id = cinema[0]
+
+                # Fetch movies in the current cinema
+                movies_in_cinema_query = """
+                    SELECT DISTINCT m.Title, year(m.Release_Date), m.Language, m.Duration, m.IMDB_Rating, gen.GenreName
+                    FROM Movies m
+                    LEFT JOIN CinemaListings cl ON m.MovieID = cl.MovieID
+                    LEFT JOIN MovieGenre g ON m.MovieID = g.MovieID
+                    LEFT JOIN Genre gen ON g.GenreID = gen.GenreID
+                    WHERE cl.CinemaID = ?
+                """
+                cursor.execute(movies_in_cinema_query, cinema_id)
+                movies = cursor.fetchall()
+
+                if not movies:
+                    logging.warning(f"No movies found for CinemaID {cinema_id}.")
+                    continue
+
+                for movie in movies:
+                    movie_details = {
+                        'Title': movie[0] or 'N/A',
+                        'Release Year': movie[1] or 'N/A',
+                        'Language': movie[2] or 'N/A',
+                        'Runtime': movie[3] or 'N/A',
+                        'IMDB Rating': movie[4] or 'N/A',
+                        'Genre': movie[5] or 'N/A'
+                    }
+                    movie_list.append(movie_details)
+
+            if not movie_list:
+                logging.warning(f"No movies found for cinemas in {customer_city}.")
+                QtWidgets.QMessageBox.warning(self, "No Movies Found", f"No movies found in cinemas in {customer_city}.")
+                return
+
+            # Step 4: Populate the UI with the fetched movie list
+            self.populate_movies_table(movie_list)
+            QtWidgets.QMessageBox.information(self, "Movies Retrieved", "Movies for your city are displayed!")
+
+        except Exception as e:
+            logging.error(f"Error fetching movies for CustomerID {customer_id}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
+        finally:
+            cursor.close()
+            connection.close()
+
+    def fetch_and_display_movies_by_year(self, target_year):
+        """Fetch movies released in a specific year and display their details."""
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        try:
+            # Query to fetch movies with the specified release year
+            query = """
+                SELECT DISTINCT m.Title, year(m.Release_Date), m.Language, m.Duration, m.IMDB_Rating, gen.GenreName
+                FROM Movies m
+                LEFT JOIN MovieGenre g ON m.MovieID = g.MovieID
+                LEFT JOIN Genre gen ON g.GenreID = gen.GenreID
+                WHERE year(m.Release_Date) = ?
+            """
+            cursor.execute(query, target_year)
+            movies = cursor.fetchall()
+
+            if not movies:
+                logging.warning(f"No movies found released in the year {target_year}.")
+                QtWidgets.QMessageBox.warning(self, "No Movies Found",
+                                            f"No movies found released in the year {target_year}.")
+                return
+
+            # Prepare the list of movie details for display
+            movie_list = []
+            for movie in movies:
+                movie_details = {
+                    'Title': movie[0] or 'N/A',
+                    'Release Year': movie[1] or 'N/A',
+                    'Language': movie[2] or 'N/A',
+                    'Runtime': movie[3] or 'N/A',
+                    'IMDB Rating': movie[4] or 'N/A',
+                    'Genre': movie[5] or 'N/A'
+                }
+                movie_list.append(movie_details)
+
+            # Populate the UI table or list with the movies
+            self.populate_movies_table(movie_list)
+            QtWidgets.QMessageBox.information(self, "Movies Retrieved", f"Movies from {target_year} are displayed!")
+
+        except Exception as e:
+            logging.error(f"Error fetching movies released in {target_year}: {e}")
+            QtWidgets.QMessageBox.warning(self, "Error", "An error occurred while fetching movies.")
+        finally:
+            cursor.close()
+            connection.close()
+
 
 
 
