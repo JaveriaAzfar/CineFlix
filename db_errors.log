@@ -76,3 +76,47 @@ ERROR:root:An error occurred: ('23000', '[23000] [Microsoft][ODBC Driver 17 for 
 2024-11-25 09:24:25,756 - ERROR - Error registering user: super(type, obj): obj must be an instance or subtype of type
 2024-11-25 09:25:45,195 - ERROR - Error registering user: ('23000', "[23000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Violation of PRIMARY KEY constraint 'PK__Account__A9D10535BABEAEBE'. Cannot insert duplicate key in object 'dbo.Account'. The duplicate key value is (azfar@gmail.com). (2627) (SQLExecDirectW); [23000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The statement has been terminated. (3621)")
 2024-11-25 09:26:05,744 - ERROR - Error registering user: super(type, obj): obj must be an instance or subtype of type
+2024-12-16 20:05:02,330 - ERROR - Error logging in user: type object 'QMessageBox' has no attribute 'Yes'
+2024-12-16 20:05:24,587 - ERROR - Error logging in user: type object 'QMessageBox' has no attribute 'Yes'
+2024-12-16 20:05:52,703 - ERROR - Error logging in user: type object 'QMessageBox' has no attribute 'Yes'
+2024-12-16 20:07:13,866 - ERROR - Error logging in user: type object 'QMessageBox' has no attribute 'Yes'
+2024-12-16 20:08:01,145 - ERROR - Error logging in user: 'LoginScreen' object has no attribute 'self'
+2024-12-16 20:11:35,335 - ERROR - Error logging in user: super(type, obj): obj must be an instance or subtype of type
+2024-12-16 20:18:37,003 - ERROR - Error logging in user: super(type, obj): obj must be an instance or subtype of type
+2024-12-16 21:27:01,877 - ERROR - Error registering user: Attempt to use a closed cursor.
+2024-12-16 21:28:15,898 - ERROR - Error registering user: Attempt to use a closed cursor.
+2024-12-16 21:31:51,977 - ERROR - Error registering user: ('Wrong base class of toplevel widget', (<class '__main__.PremiumViewerPayment'>, 'QMainWindow'))
+2024-12-16 21:33:54,896 - ERROR - Error registering user: 'RegisterScreenAsPremiumViewer' object has no attribute 'payment_page_page'
+2024-12-16 22:13:09,381 - ERROR - Error registering user: RegisterScreenAsPremiumViewer.go_to_payment_page() missing 2 required positional arguments: 'customer_id' and 'role'
+2024-12-16 23:53:59,493 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:04,051 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:04,877 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:05,067 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:07,685 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:08,676 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:08,881 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:09,638 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:11,073 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-16 23:54:11,920 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-17 01:39:10,710 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-17 01:39:16,998 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-17 01:47:22,598 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-17 01:47:35,470 - ERROR - Error searching movies: MovieDescriptionScreen.__init__() missing 1 required positional argument: 'movie_id'
+2024-12-17 01:51:32,267 - ERROR - Error searching movies: cannot access local variable 'movie_id' where it is not associated with a value
+2024-12-17 01:56:06,947 - ERROR - Error fetching movies for Genre romance: 'MovieDescriptionScreen' object has no attribute 'populate_movies_table'
+2024-12-17 02:01:00,318 - ERROR - Error fetching movie details for MovieID 3: 0
+2024-12-17 02:01:19,162 - ERROR - Error fetching movies for Genre romance: 'MovieDescriptionScreen' object has no attribute 'populate_movies_table'
+2024-12-17 02:03:29,787 - ERROR - Error fetching movies for Genre romance: 'int' object has no attribute 'isdigit'
+2024-12-17 02:03:51,546 - ERROR - Error fetching movie details for MovieID 3: 0
+2024-12-17 02:08:44,363 - ERROR - Error fetching movie details for MovieID 3: 0
+2024-12-17 06:20:46,313 - ERROR - Error fetching movies for Genre romance: 0
+2024-12-17 06:34:22,296 - ERROR - Error fetching movies for Language english: 0
+2024-12-17 06:34:42,872 - ERROR - Error fetching movies for Kate Winslet: 0
+2024-12-17 06:58:31,137 - ERROR - Error updating DateStarted: ('22018', "[22018] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Conversion failed when converting the nvarchar value 'La La Land' to data type int. (245) (SQLExecDirectW)")
+2024-12-17 06:58:31,151 - ERROR - Error updating DateAdded: ('22018', "[22018] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Conversion failed when converting the nvarchar value 'La La Land' to data type int. (245) (SQLExecDirectW)")
+2024-12-17 07:28:34,834 - ERROR - Error updating DateStarted: ('22018', "[22018] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Conversion failed when converting the nvarchar value 'La La Land' to data type int. (245) (SQLExecDirectW)")
+2024-12-17 07:28:34,845 - ERROR - Error updating DateAdded: ('22018', "[22018] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Conversion failed when converting the nvarchar value 'La La Land' to data type int. (245) (SQLExecDirectW)")
+2024-12-17 07:41:17,591 - ERROR - Error updating DateStarted: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Title'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2024-12-17 07:41:17,599 - ERROR - Error updating DateAdded: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Title'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2024-12-17 07:41:19,711 - ERROR - Error updating DateAdded: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Title'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2024-12-17 07:41:23,277 - ERROR - Error updating DateStarted: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Title'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
