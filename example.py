@@ -1059,7 +1059,6 @@ class UserProfileEmployee(QtWidgets.QMainWindow):
         else:
             return None
     
-
     def get_all_movies(self):
         connection = pyodbc.connect(connection_string)
         cursor = connection.cursor()
@@ -1113,7 +1112,6 @@ class UserProfileEmployee(QtWidgets.QMainWindow):
         # Populate the tables
         self.populate_screenings_table(self.cinemaTable, self.get_all_screenings())
         self.populate_movies_table_cinema(self.moviesTable, self.get_all_movies())
-
 
     def add_cinema_listing(self):
         """Show the UI for adding a new movie.""" 
@@ -1239,7 +1237,6 @@ class UserProfileEmployee(QtWidgets.QMainWindow):
         self.add_movie_window = AddMovieDetails(self) 
         self.add_movie_window.show()
 
-   
     def delete_movie(self):
         """Delete a movie from the database."""
         current_row = self.movieTable.currentRow()
@@ -1368,7 +1365,6 @@ class UserProfileEmployee(QtWidgets.QMainWindow):
         # Debug: Check the number of rows and columns
         print(f"Rows: {table.rowCount()}, Columns: {table.columnCount()}")
 
-
     def update_movie_data_cinema(self):
         """Update the movie data in the database."""
         row = self.moviesTable.currentRow()
@@ -1413,7 +1409,6 @@ class UserProfileEmployee(QtWidgets.QMainWindow):
             finally:
                 cursor.close()
                 connection.close()
-
 
     def populate_movies_table(self, table, movie_list):
         """Populate the table with movie data."""
@@ -2090,11 +2085,11 @@ class PremiumViewerPayment(QtWidgets.QMainWindow):
             cursor.close()
             connection.close()
 
-            QtWidgets.QMessageBox.information(self, "Success", "Payment successful!")
+            QtWidgets.QMessageBox.information(self, "Success", "Registration Successful!")
             self.go_to_home_page()
 
         except Exception as e:
-            QtWidgets.QMessageBox.critical(self, "Error", f"Payment failed: {e}")
+            QtWidgets.QMessageBox.critical(self, "Error", f"Registration Failed: {e}")
 
     def go_to_home_page(self):
         # Load the Home Page UI
@@ -2156,16 +2151,8 @@ class LoginScreen(QtWidgets.QMainWindow):
         if not email: 
             QtWidgets.QMessageBox.warning(self, "Error", "Please enter your email address.") 
             return 
-        # Placeholder for sending the recovery email 
-        try: # Create the email content 
-            # msg = MIMEText("Click the link below to reset your password:\n\nhttp://example.com/recover_password") 
-            # msg['Subject'] = 'Password Recovery' 
-            # msg['From'] = 'no-reply@example.com' 
-            # msg['To'] = email 
-            # # Send the email (using a dummy SMTP server) 
-            # with smtplib.SMTP('smtp.example.com') as server: 
-            #     server.sendmail(msg['From'], [msg['To']], msg.as_string()) 
-            
+
+        try:            
             QtWidgets.QMessageBox.information(self, "Success", "Recovery link has been sent to your email.") 
         
         except Exception as e: 
