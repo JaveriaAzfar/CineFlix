@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1131</width>
-    <height>833</height>
+    <width>1148</width>
+    <height>878</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Cinema Manager Profile</string>
+   <string>User Profile</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QFrame" name="frame_3">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>70</y>
+      <x>80</x>
+      <y>40</y>
       <width>981</width>
-      <height>271</height>
+      <height>751</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -29,34 +29,116 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QScrollBar" name="verticalScrollBar_2">
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Watch History</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>200</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Wish List</string>
+     </property>
+    </widget>
+    <widget class="QScrollBar" name="verticalScrollBar">
      <property name="geometry">
       <rect>
        <x>950</x>
        <y>20</y>
        <width>16</width>
-       <height>411</height>
+       <height>701</height>
       </rect>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
-    <widget class="QTableWidget" name="cinemaListingsTable">
+    <widget class="QTableWidget" name="historyTable">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>40</y>
-       <width>891</width>
-       <height>151</height>
+       <x>80</x>
+       <y>60</y>
+       <width>791</width>
+       <height>101</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="favoritesTable">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>230</y>
+       <width>791</width>
+       <height>101</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="paymentTable">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>410</y>
+       <width>791</width>
+       <height>91</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>380</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Payment Plan:</string>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="reviewsTable">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>560</y>
+       <width>791</width>
+       <height>121</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>530</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Reviews:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="add">
      <property name="geometry">
       <rect>
-       <x>850</x>
-       <y>200</y>
+       <x>790</x>
+       <y>690</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -65,76 +147,11 @@
       <string>Add</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="delete_2">
+    <widget class="QPushButton" name="update">
      <property name="geometry">
       <rect>
-       <x>770</x>
-       <y>200</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Delete</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_8">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>181</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Ongoing Cinema Screenings</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_4">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>390</y>
-      <width>981</width>
-      <height>271</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QScrollBar" name="verticalScrollBar_3">
-     <property name="geometry">
-      <rect>
-       <x>950</x>
-       <y>20</y>
-       <width>16</width>
-       <height>411</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="cinemaListingsTable_2">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>40</y>
-       <width>891</width>
-       <height>151</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="update_2">
-     <property name="geometry">
-      <rect>
-       <x>850</x>
-       <y>200</y>
+       <x>630</x>
+       <y>690</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -143,17 +160,17 @@
       <string>Update</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_9">
+    <widget class="QPushButton" name="delete_2">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>181</width>
-       <height>16</height>
+       <x>710</x>
+       <y>690</y>
+       <width>75</width>
+       <height>23</height>
       </rect>
      </property>
      <property name="text">
-      <string>Movie Screenings</string>
+      <string>Delete</string>
      </property>
     </widget>
    </widget>
@@ -176,7 +193,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1131</width>
+     <width>1148</width>
      <height>21</height>
     </rect>
    </property>

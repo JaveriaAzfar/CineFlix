@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>603</width>
-    <height>471</height>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>50</y>
+      <y>70</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -48,7 +48,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>180</y>
+      <y>200</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -72,7 +72,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>220</y>
+      <y>240</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -97,7 +97,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>260</y>
+      <y>280</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -121,7 +121,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>50</y>
+      <y>70</y>
       <width>351</width>
       <height>31</height>
      </rect>
@@ -139,7 +139,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>180</y>
+      <y>200</y>
       <width>351</width>
       <height>31</height>
      </rect>
@@ -157,7 +157,7 @@
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>220</y>
+      <y>240</y>
       <width>341</width>
       <height>31</height>
      </rect>
@@ -175,7 +175,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>260</y>
+      <y>280</y>
       <width>351</width>
       <height>31</height>
      </rect>
@@ -193,7 +193,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>380</y>
+      <y>400</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -231,7 +231,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>300</y>
+      <y>320</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -255,7 +255,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>340</y>
+      <y>360</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -279,7 +279,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>300</y>
+      <y>320</y>
       <width>351</width>
       <height>31</height>
      </rect>
@@ -297,7 +297,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>340</y>
+      <y>360</y>
       <width>351</width>
       <height>31</height>
      </rect>
@@ -315,7 +315,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>90</y>
+      <y>110</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -340,7 +340,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>140</y>
+      <y>160</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -365,7 +365,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>130</y>
+      <y>150</y>
       <width>141</width>
       <height>31</height>
      </rect>
@@ -375,7 +375,7 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>100</y>
+      <y>120</y>
       <width>69</width>
       <height>22</height>
      </rect>
@@ -398,6 +398,44 @@ QPushButton:pressed {
       <string>Male</string>
      </property>
     </item>
+   </widget>
+   <widget class="QPushButton" name="backButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Cambria Math</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: rgb(170, 170, 255);
+    color: rgb(0, 0, 0);
+
+}
+
+
+QPushButton:hover {
+    background-color:rgb(128, 120, 215);
+    color: rgb(0, 0, 0)
+}
+
+QPushButton:pressed {
+    background-color: rgb(85, 170, 127);
+    color: rgb(0, 0, 0)
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Back</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

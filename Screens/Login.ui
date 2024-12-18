@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>630</width>
-    <height>352</height>
+    <height>371</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -202,6 +202,43 @@ QPushButton:pressed {
     </property>
     <property name="text">
      <string>Forgot Password?</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="registerButton">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>280</y>
+      <width>161</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Cambria Math</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: rgb(170, 170, 255);
+    color: rgb(0, 0, 0);
+
+}
+
+
+QPushButton:hover {
+    background-color: rgb(128, 120, 215);
+    color: rgb(0, 0, 0)
+}
+
+QPushButton:pressed {
+    background-color: rgb(85, 170, 127);
+    color: rgb(0, 0, 0)
+}</string>
+    </property>
+    <property name="text">
+     <string>Don't have an account?</string>
     </property>
    </widget>
   </widget>

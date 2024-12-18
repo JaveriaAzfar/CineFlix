@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>783</width>
-    <height>503</height>
+    <width>793</width>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
+      <x>30</x>
+      <y>60</y>
       <width>211</width>
       <height>21</height>
      </rect>
@@ -48,8 +48,8 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>130</y>
+      <x>40</x>
+      <y>180</y>
       <width>721</width>
       <height>231</height>
      </rect>
@@ -450,8 +450,8 @@ QComboBox QAbstractItemView {
    <widget class="QRadioButton" name="radioButton">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>380</y>
+      <x>440</x>
+      <y>430</y>
       <width>321</width>
       <height>20</height>
      </rect>
@@ -490,8 +490,8 @@ QRadioButton::indicator:unchecked {
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>40</y>
+      <x>30</x>
+      <y>90</y>
       <width>521</width>
       <height>16</height>
      </rect>
@@ -514,8 +514,8 @@ QRadioButton::indicator:unchecked {
    <widget class="QPushButton" name="submitPayment">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>410</y>
+      <x>490</x>
+      <y>460</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -552,8 +552,8 @@ QPushButton:pressed {
    <widget class="QPushButton" name="cancel">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>410</y>
+      <x>630</x>
+      <y>460</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -590,8 +590,8 @@ QPushButton:pressed {
    <widget class="QLabel" name="label_14">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>90</y>
+      <x>40</x>
+      <y>140</y>
       <width>291</width>
       <height>21</height>
      </rect>
@@ -615,13 +615,51 @@ QPushButton:pressed {
 </string>
     </property>
    </widget>
+   <widget class="QPushButton" name="backButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Cambria Math</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: rgb(170, 170, 255);
+    color: rgb(0, 0, 0);
+
+}
+
+
+QPushButton:hover {
+    background-color:rgb(128, 120, 215);
+    color: rgb(0, 0, 0)
+}
+
+QPushButton:pressed {
+    background-color: rgb(85, 170, 127);
+    color: rgb(0, 0, 0)
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Back</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>783</width>
+     <width>793</width>
      <height>21</height>
     </rect>
    </property>

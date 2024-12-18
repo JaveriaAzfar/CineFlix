@@ -60,7 +60,7 @@
    <widget class="QPushButton" name="userProfileButton">
     <property name="geometry">
      <rect>
-      <x>974</x>
+      <x>910</x>
       <y>10</y>
       <width>101</width>
       <height>23</height>
@@ -942,6 +942,42 @@ QPushButton:pressed {
       <bool>true</bool>
      </property>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="logoutButton">
+    <property name="geometry">
+     <rect>
+      <x>1020</x>
+      <y>10</y>
+      <width>71</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Cambria</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: rgb(170, 170, 255);
+    color: black;
+}
+
+QPushButton:hover {
+    background-color: rgb(128, 120, 215);
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: rgb(85, 170, 127);
+    color: white;
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Logout</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
