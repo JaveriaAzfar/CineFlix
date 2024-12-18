@@ -1,4 +1,4 @@
-# Cinema: Movie Database Management System
+# CineFlix: Movie Database Management System
 
 This project is a Movie Database Management System (MDBMS) called CineFlix that manages movies, genres, crew members, cinema screenings, and customer-related activities such as reviews, favorites, and payment processing. The system allows adding, updating, deleting, and fetching movie data, associated genres, crew, cinema screenings, and customer interactions. This was completed as part of the course CS/CE 355/373: Database Systems.
 
